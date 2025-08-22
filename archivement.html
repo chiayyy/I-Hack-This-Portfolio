@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Hack This — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .site-header {
+            background: rgba(0, 255, 0, 0.1);
+            border-bottom: 2px solid #00ff00;
+            padding: 1rem 0;
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .nav a {
+            color: #00ff00;
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav a:hover {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+        }
+
+        /* Achievement Grid */
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .achievement-card {
+            background: rgba(0, 255, 0, 0.05);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.3);
+            border-color: #00ff88;
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .achievement-card:hover::before {
+            left: 100%;
+        }
+
+        .achievement-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .achievement-image:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+
+        .achievement-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #00ff88;
+        }
+
+        .achievement-date {
+            font-size: 0.9rem;
+            color: #00aa00;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-name, .event-description, .award {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.05);
+            border-left: 3px solid #00ff00;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .event-name strong, .event-description strong, .award strong {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .award {
+            background: rgba(255, 215, 0, 0.1);
+            border-left-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .award strong {
+            color: #ffd700;
+        }
+
+        .achievement-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #00ff00;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #0a0a0a;
+            margin: 5% auto;
+            padding: 2rem;
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            color: #00ff00;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #00ff88;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00ff88;
+        }
+
+        .modal-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: rgba(0, 255, 0, 0.1);
+            border-top: 2px solid #00ff00;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-inner {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav a {
+                margin: 0 0.5rem;
+            }
+        }
+
+        /* Glow Effects */
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+            }
+            to {
+                text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="logo glow">I Hack This</h1>
+            <nav class="nav">
+                <a href="index.html">About</a>
+                <a href="archivement.html">Achievements</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2 class="section-title glow">Achievements & Awards</h2>
+        
+        <div class="achievement-grid">
+            <div class="achievement-card">
+                <img src="image/hackwknd.jpg" alt="Achievement 1" class="achievement-image" onclick="openModal(this)">
+                <h3 class="achievement-title">HackWknd 2025 - STEM Education Tools</h3>
+                <p class="achievement-date">July 2025</p>
+                <p class="event-name"><strong>Event:</strong> HackWknd 2025</p>
+                <p class="event-description"><strong>Description:</strong> Participated in an intensive 48-hour hackathon focused on developing innovative STEM education solutions. Designed and prototyped interactive software tools to enhance learning experiences in science, technology, engineering, and mathematics.</p>
+                <p class="award"><strong>Award:</strong> 🥈 1st Runner Up</p>
+                <div class="achievement-tags">
+                    <span class="tag">Hackathon</span>
+                    <span class="tag">STEM Education</span>
+                    <span class="tag">Software Development</span>
+                    <span class="tag">Prototyping</span>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <img src="image/cf.jpg" alt="Achievement 2" class="achievement-image" onclick="openModal(this)">
+                <h3 class="achievement-title">CodeFusion 2025 - Biodiversity Innovation</h3>
+                <p class="achievement-date">April 2025</p>
+                <p class="event-name"><strong>Event:</strong> CodeFusion 2025</p>
+                <p class="event-description"><strong>Description:</strong> Competed in a regional innovation challenge held in Sibu, focusing on developing cutting-edge solutions to address biodiversity conservation through technological innovation and creative problem-solving.</p>
+                <p class="award"><strong>Award:</strong> 🏆 Champion</p>
+                <div class="achievement-tags">
+                    <span class="tag">Innovation Challenge</span>
+                    <span class="tag">Biodiversity</span>
+                    <span class="tag">Technology</span>
+                    <span class="tag">Problem Solving</span>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <img src="image/gj.jpg" alt="Achievement 3" class="achievement-image" onclick="openModal(this)">
+                <h3 class="achievement-title">GameJam SWKDC - Motion Theme</h3>
+                <p class="achievement-date">August 2024</p>
+                <p class="event-name"><strong>Event:</strong> GameJam SWKDC</p>
+                <p class="event-description"><strong>Description:</strong> Participated in a game development competition with the theme "Motion", where we designed, created, and developed an innovative game. Successfully showcased our product at the prestigious KL exhibition, demonstrating our creative and technical skills in game development.</p>
+                <p class="award"><strong>Award:</strong> 🏅 Most Memorable Award</p>
+                <div class="achievement-tags">
+                    <span class="tag">Game Development</span>
+                    <span class="tag">GameJam</span>
+                    <span class="tag">Motion Theme</span>
+                    <span class="tag">Product Showcase</span>
+                    <span class="tag">KL Exhibition</span>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <img src="image/hippo.jpg" alt="Achievement 4" class="achievement-image" onclick="openModal(this)">
+                <h3 class="achievement-title">IC Design MAKE-A-THON 2025 - Pulse Detector</h3>
+                <p class="achievement-date">July 2025</p>
+                <p class="event-name"><strong>Event:</strong> IC Design MAKE-A-THON 2025</p>
+                <p class="event-description"><strong>Description:</strong> Participated in an intensive 48-hour hardware innovation challenge focused on IC design. Successfully developed an innovative pulse detector using advanced chip technology, demonstrating expertise in integrated circuit design and rapid prototyping.</p>
+                <p class="award"><strong>Award:</strong> 🥈 1st Runner Up</p>
+                <div class="achievement-tags">
+                    <span class="tag">IC Design</span>
+                    <span class="tag">Hardware Innovation</span>
+                    <span class="tag">Pulse Detector</span>
+                    <span class="tag">Chip Technology</span>
+                    <span class="tag">Rapid Prototyping</span>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <img src="image/s24.jpg" alt="Achievement 5" class="achievement-image" onclick="openModal(this)">
+                <h3 class="achievement-title">Shell Varsity Challenge 2024 - Road Safety Innovation</h3>
+                <p class="achievement-date">September 2024</p>
+                <p class="event-name"><strong>Event:</strong> Shell Varsity Challenge 2024</p>
+                <p class="event-description"><strong>Description:</strong> Participated in a prestigious university innovation challenge focused on developing innovative solutions to prevent road accidents. Designed and presented cutting-edge technology aimed at enhancing road safety and reducing traffic incidents.</p>
+                <p class="award"><strong>Award:</strong> 🏅 Top 20 Finalists</p>
+                <div class="achievement-tags">
+                    <span class="tag">Innovation Challenge</span>
+                    <span class="tag">Road Safety</span>
+                    <span class="tag">Technology</span>
+                    <span class="tag">University Competition</span>
+                    <span class="tag">Traffic Safety</span>
+                </div>
+            </div>
+
+            <div class="achievement-card">
+                <img src="image/s25.jpg" alt="Achievement 6" class="achievement-image" onclick="openModal(this)">
+                <h3 class="achievement-title">Shell Varsity Challenge 2025 - Road Slippery Prevention</h3>
+                <p class="achievement-date">September 2025</p>
+                <p class="event-name"><strong>Event:</strong> Shell Varsity Challenge 2025</p>
+                <p class="event-description"><strong>Description:</strong> Competing in an ongoing innovation challenge focused on preventing accidents caused by slippery road conditions. Successfully advanced to the Top 20 in the previous month and currently pursuing advancement to the Top 10 with innovative road safety solutions.</p>
+                <p class="award"><strong>Award:</strong> 🏅 Top 20 (Advancing to Top 10)</p>
+                <div class="achievement-tags">
+                    <span class="tag">Innovation Challenge</span>
+                    <span class="tag">Road Safety</span>
+                    <span class="tag">Slippery Road Prevention</span>
+                    <span class="tag">Ongoing Competition</span>
+                    <span class="tag">Top 20 Achievement</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="achievementModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" class="modal-image" alt="Achievement Image">
+            <h3 id="modalTitle" class="modal-title"></h3>
+            <p id="modalDate" class="achievement-date"></p>
+            <p id="modalDescription" class="modal-description"></p>
+            <div id="modalTags" class="achievement-tags"></div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© <span id="year"></span> I Hack This. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Modal functionality
+        function openModal(imageElement) {
+            const modal = document.getElementById('achievementModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDate = document.getElementById('modalDate');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalTags = document.getElementById('modalTags');
+
+            // Get achievement data from the card
+            const card = imageElement.closest('.achievement-card');
+            const title = card.querySelector('.achievement-title').textContent;
+            const date = card.querySelector('.achievement-date').textContent;
+            const description = card.querySelector('.achievement-description').textContent;
+            const tags = card.querySelectorAll('.tag');
+
+            // Set modal content
+            modalImg.src = imageElement.src;
+            modalImg.alt = imageElement.alt;
+            modalTitle.textContent = title;
+            modalDate.textContent = date;
+            modalDescription.textContent = description;
+
+            // Clear and set tags
+            modalTags.innerHTML = '';
+            tags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'tag';
+                tagSpan.textContent = tag.textContent;
+                modalTags.appendChild(tagSpan);
+            });
+
+            // Show modal
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('achievementModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('achievementModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Add hover effects to achievement cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.achievement-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
